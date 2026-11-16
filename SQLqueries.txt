@@ -1,0 +1,83 @@
+// top 5 products by revenue
+
+SELECT
+    p.ProductName,
+    SUM(o.Quantity * p.Price) AS Revenue
+FROM Orders o
+JOIN Products p
+ON o.ProductID = p.ProductID
+GROUP BY p.ProductName
+ORDER BY Revenue DESC
+LIMIT 5;
+
+// revenue by category
+
+SELECT
+    p.Category,
+    SUM(o.Quantity * p.Price) AS TotalRevenue
+FROM Orders o
+JOIN Products p
+ON o.ProductID = p.ProductID
+GROUP BY p.Category
+ORDER BY TotalRevenue DESC;
+
+
+// monthly sales trend
+
+SELECT
+    strftime('%Y-%m', OrderDate) AS Month,
+    SUM(Quantity * Price) AS MonthlySales
+FROM Orders o
+JOIN Products p
+ON o.ProductID = p.ProductID
+GROUP BY Month
+ORDER BY Month;
+
+
+//top 5 customers
+
+SELECT
+    c.CustomerName,
+    SUM(o.Quantity * p.Price) AS TotalSpending
+FROM Orders o
+JOIN Customers c
+ON o.CustomerID = c.CustomerID
+JOIN Products p
+ON o.ProductID = p.ProductID
+GROUP BY c.CustomerName
+ORDER BY TotalSpending DESC
+LIMIT 5;
+
+//total revenue
+
+SELECT
+    SUM(o.Quantity * p.Price) AS TotalRevenue
+FROM Orders o
+JOIN Products p
+ON o.ProductID = p.ProductID;
+
+//highest sales Month
+
+SELECT
+    strftime('%Y-%m', OrderDate) AS Month,
+    SUM(Quantity * Price) AS TotalSales
+FROM Orders o
+JOIN Products p
+ON o.ProductID = p.ProductID
+GROUP BY Month
+ORDER BY TotalSales DESC
+LIMIT 1;
+
+//Average order value
+
+SELECT
+    AVG(OrderRevenue) AS AverageOrderValue
+FROM (
+    SELECT
+        OrderID,
+        SUM(Quantity * Price) AS OrderRevenue
+    FROM Orders o
+    JOIN Products p
+    ON o.ProductID = p.ProductID
+    GROUP BY OrderID
+);
